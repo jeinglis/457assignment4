@@ -54,7 +54,7 @@ void kosMain() {
   }
 
   
-  auto iter = kernelFS.find("schedparam");
+  iter = kernelFS.find("schedparam");
   if (iter == kernelFS.end()) {
     KOUT::outl("schedparam information not found");
   } else {
