@@ -17,6 +17,7 @@
 #include "kernel/Process.h"
 
 int InitProcess() {
+/*  
   Process* p0 = knew<Process>();
   p0->exec("systest");
 #if !TESTING_KEYCODE_LOOP
@@ -27,5 +28,6 @@ int InitProcess() {
   p2->exec("threadtest");
   Process* p3 = knew<Process>();
   p3->exec("manythread");
+*/
   return 0;
 }

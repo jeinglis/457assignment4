@@ -1,0 +1,10 @@
+pthread.o: pthread.cc \
+ /home/ugc/jeinglis/457assignment4/src/ulib/../testoptions.h \
+ /home/ugc/jeinglis/457assignment4/src/ulib/../include/syscalls.h \
+ /home/ugc/jeinglis/457assignment4/src/ulib/../include/kostypes.h \
+ /home/ugc/jeinglis/457assignment4/src/ulib/../include/pthread.h \
+ /home/ugc/jeinglis/457assignment4/src/ulib/../include/syscalls.h
+libKOS.o: libKOS.cc \
+ /home/ugc/jeinglis/457assignment4/src/ulib/../testoptions.h \
+ /home/ugc/jeinglis/457assignment4/src/ulib/../include/syscalls.h \
+ /home/ugc/jeinglis/457assignment4/src/ulib/../include/kostypes.h

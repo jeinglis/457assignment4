@@ -67,10 +67,10 @@ void kosMain() {
 #endif
   Thread::create()->start((ptr_t)UserMain);
 #if TESTING_PING_LOOP
-  for (;;) {
+ /* for (;;) {
     Timeout::sleep(Clock::now() + 1000);
     KOUT::outl("...ping...");
-  }
+  }*/
 #endif
 }
 

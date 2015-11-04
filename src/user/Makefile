@@ -41,7 +41,7 @@ echo:
 
 clean:
 	rm -f $(OBJ) $(EXE) exec/built
-	rm -rf exec
+	#rm -rf exec
 
 vclean: clean
 	rm -f Makefile.dep

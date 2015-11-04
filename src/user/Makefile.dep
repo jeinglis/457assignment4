@@ -1,0 +1,18 @@
+threadtest.o: threadtest.cc \
+ /home/ugc/jeinglis/457assignment4/src/user/../testoptions.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/syscalls.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/kostypes.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/pthread.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/syscalls.h
+systest.o: systest.cc \
+ /home/ugc/jeinglis/457assignment4/src/user/../testoptions.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/syscalls.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/kostypes.h
+manythread.o: manythread.cc \
+ /home/ugc/jeinglis/457assignment4/src/user/../testoptions.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/syscalls.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/kostypes.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/pthread.h \
+ /home/ugc/jeinglis/457assignment4/src/user/../include/syscalls.h
+kbloop.o: kbloop.cc \
+ /home/ugc/jeinglis/457assignment4/src/user/../testoptions.h
