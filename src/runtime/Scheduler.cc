@@ -31,6 +31,12 @@ Scheduler::Scheduler() : readyCount(0), preemption(0), resumption(0), partner(th
 
 static inline void unlock() {}
 
+
+//Written by James*********
+static int defaultEpoch;
+static int minimumGranularity;
+//*************************
+
 template<typename... Args>
 static inline void unlock(BasicLock &l, Args&... a) {
   l.release();
