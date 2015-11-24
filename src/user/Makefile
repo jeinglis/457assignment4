@@ -12,7 +12,8 @@ OBJ=$(SRC:%.cc=%.o)
 EXE=$(SRC:%.cc=exec/%)
 
 all: $(EXE) exec/motb
-
+#added by James
+all: $(EXE) exec/schedparam
 .PHONY: .FORCE
 
 $(OBJ): %.o: %.cc
@@ -54,7 +55,7 @@ echo:
 
 clean:
 	rm -f $(OBJ) $(EXE) exec/built
-	#rm -rf exec
+	rm -rf exec
 
 vclean: clean
 	rm -f Makefile.dep

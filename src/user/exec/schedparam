@@ -1,5 +1,7 @@
 
-defaultEpoch 20
+Scheduler Parameters
 
-minimumGranularity 2
+Default Epoch:20ms
+
+schedMinGranularity:4ms
 
