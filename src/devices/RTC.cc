@@ -17,8 +17,10 @@
 #include "machine/APIC.h"
 #include "machine/Machine.h"
 #include "devices/RTC.h"
+#include "kernel/Output.h"//Added by James Assignment 4a
 
 void RTC::init() { // see http://wiki.osdev.org/RTC
+  
   Machine::registerIrqSync(PIC::RTC, 0xf8);
 
   CPU::out8(0x70, CPU::in8(0x70) | 0x80); // disable NMI
@@ -26,13 +28,20 @@ void RTC::init() { // see http://wiki.osdev.org/RTC
   CPU::out8(0x70, 0x0A);             // select Status Register A
   uint8_t prev = CPU::in8(0x71);     // read current value
   CPU::out8(0x70, 0x0A);             // select Status Register A
-  CPU::out8(0x71, prev | 0x06);      // set rate to 32768 / (2^(6-1)) = 1024 Hz
+  //CPU::out8(0x71, prev | 0x06);      // set rate to 32768 / (2^(6-1)) = 1024 Hz
 
+//added by James Assignment 4a
+  unsigned int rate=0;
+  rate = 0x03;			//set rate
+  CPU::out8(0x71, (prev& 0xF0) |rate);
+  KOUT::outl();
+  KOUT::outl("RTC Frequency is set to 8khz (32768 >>(rate-1))");
+  KOUT::outl();
+//**********************
   CPU::out8(0x70, 0x0B);             // select Status Register B
   prev = CPU::in8(0x71);             // read current value
   CPU::out8(0x70, 0x0B);             // select Status Register B
   CPU::out8(0x71, prev | 0x40);      // enable RTC with periodic firing
-
   CPU::out8(0x70, CPU::in8(0x70) & 0x7F); // enable NMI
 
   staticInterruptHandler();     // read RTC once -> needed to get things going

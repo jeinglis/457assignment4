@@ -34,6 +34,19 @@ exec/motb: .FORCE
 	@date >> $@
 	@echo >> $@
 
+#***********Added for 457 Assignment 4a
+exec/schedparam: .FORCE
+	@echo creating $@
+	@mkdir -p exec
+	@echo > $@
+	@echo "Scheduler Parameters" >> $@
+	@echo >> $@
+	@echo "Default Epoch:20ms" >> $@
+	@echo >> $@
+	@echo  "schedMinGranularity:4ms" >> $@
+	@echo >> $@
+#**********************************
+
 echo:
 	@echo SRC: $(SRC)
 	@echo OBJ: $(OBJ)
