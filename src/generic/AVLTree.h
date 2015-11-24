@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AVL_TREE
+#define AVL_TREE
 
 #include "Node.h"
 #include <assert.h>
@@ -221,4 +222,4 @@ void AVLTree<T>::destruct(Node<T>* &node) {
 
 
 
-
+#endif
