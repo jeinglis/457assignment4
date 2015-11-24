@@ -1,5 +1,5 @@
 /******************************************************************************
-    Copyright © 2012-2015 Martin Karsten
+    Copyright ï¿½ 2012-2015 Martin Karsten
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,13 +19,20 @@
 #include "runtime/Stack.h"
 #include "runtime/Thread.h"
 #include "kernel/Output.h"
+#include "generic/AVLTree.h"
 
 Scheduler::Scheduler() : readyCount(0), preemption(0), resumption(0), partner(this) {
   Thread* idleThread = Thread::create((vaddr)idleStack, minimumStack);
   idleThread->setAffinity(this)->setPriority(idlePriority);
   // use low-level routines, since runtime context might not exist
   idleThread->stackPointer = stackInit(idleThread->stackPointer, &Runtime::getDefaultMemoryContext(), (ptr_t)Runtime::idleLoop, this, nullptr, nullptr);
+
+
+// ********************************************************************************//
+  // Reference to ready queue, changing to use AVLTree: *************  Brad
   readyQueue[idlePriority].push_back(*idleThread);
+// ********************************************************************************//
+
   readyCount += 1;
 }
 
@@ -51,8 +58,14 @@ inline void Scheduler::switchThread(Scheduler* target, Args&... a) {
   Thread* nextThread;
   readyLock.acquire();
   for (mword i = 0; i < (target ? idlePriority : maxPriority); i += 1) {
+    // **************************************************************************//
     if (!readyQueue[i].empty()) {
+      // Reference to readyQueue, changing to use AVL tree ***** Brad
       nextThread = readyQueue[i].pop_front();
+
+      // nextThread = readyQueue.removeMin();
+      // ************************************************************************//
+
       readyCount -= 1;
       goto threadFound;
     }
@@ -103,7 +116,12 @@ extern "C" void invokeThread(Thread* prevThread, Runtime::MemoryContext* ctx, fu
 void Scheduler::enqueue(Thread& t) {
   GENASSERT1(t.priority < maxPriority, t.priority);
   readyLock.acquire();
+  // ***************************************************************************** //
+  // Replace with AVLTree implementation
   readyQueue[t.priority].push_back(t);
+  // AVL Tree implementation:
+  // readyQueue.insert(t);
+  // ***************************************************************************** //
   bool wake = (readyCount == 0);
   readyCount += 1;
   readyLock.release();
