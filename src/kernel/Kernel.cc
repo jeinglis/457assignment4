@@ -21,11 +21,14 @@
 #include "world/Access.h"
 #include "machine/Machine.h"
 #include "devices/Keyboard.h"
+#include <stdlib.h>
 
 #include "main/UserMain.h"
 
 AddressSpace kernelSpace(true); // AddressSpace.h
 volatile mword Clock::tick;     // Clock.h
+static int defaultEpochLength = 20;
+static int schedMinGranularity = 4;
 
 extern Keyboard keyboard;
 
@@ -53,20 +56,52 @@ void kosMain() {
     KOUT::outl();
   }
 
-  
-  iter = kernelFS.find("schedparam");
-  if (iter == kernelFS.end()) {
-    KOUT::outl("schedparam information not found");
-  } else {
-    FileAccess f(iter->second);
-    for (;;) {
-      char c;
-      if (f.read(&c, 1) == 0) break;
-      KOUT::out1(c);
-    }
-    KOUT::outl();
-  }
 
+//Added by James assignment4a
+    string tempString = "";
+    bool checked = false;
+    
+    iter = kernelFS.find("schedparam");
+    if (iter == kernelFS.end()) {
+        KOUT::outl("schedparam information not found");
+    } else {
+
+        FileAccess f(iter->second);
+        for (;;) {
+            char c;
+            if (f.read(&c, 1) == 0) break;
+            
+            if(c >= 48 && c <= 57) // number
+            {
+                KOUT::out1(c);
+                tempString += c; // append number to tempString
+            }
+            else if ((c < 48 || c > 57) && !tempString.empty()) //if the number exists and has been read
+            {
+                KOUT::out1(c);
+                
+                if(checked == false){
+                    //convert to int and store in schedMinGranularity
+                    defaultEpochLength = atoi(tempString.c_str());
+                    tempString = "";
+                    checked = true;
+                }
+                else
+                    schedMinGranularity = atoi(tempString.c_str());
+            }
+            else
+                KOUT::out1(c);
+        }
+        //KOUT::outl();
+    }
+    defaultEpochLength = defaultEpochLength * (Machine::cyclesPerSecond/1000);
+    schedMinGranularity = schedMinGranularity * (Machine::cyclesPerSecond/1000);
+    
+    KOUT::outl("cyclesPerSecond: ", Machine::cyclesPerSecond);
+    KOUT::outl("Scheduler Parameters: ");
+    KOUT::outl("1. EpochLength: ", defaultEpochLength, " cycles");
+    KOUT::outl("2. MinGranularity: ", schedMinGranularity, " cycles\n");
+  //Added by Moath - end
 
 #if TESTING_TIMER_TEST
   StdErr.print(" timer test, 3 secs...");

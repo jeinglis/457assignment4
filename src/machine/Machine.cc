@@ -46,6 +46,7 @@ extern void initCdiDrivers();
 extern bool findCdiDriver(const PCIDevice&);
 extern void lwip_init_tcpip();
 extern void kosMain();
+mword Machine::cyclesPerSecond;
 
 // check various assumptions about data type sizes
 static_assert(sizeof(uint64_t) == sizeof(mword), "mword != uint64_t" );
@@ -397,6 +398,16 @@ apDone:
   // start irq thread after cdi init -> avoid interference from device irqs
   DBG::outl(DBG::Boot, "Creating IRQ thread...");
   Thread::create()->setPriority(topPriority)->setAffinity(processorTable[0].scheduler)->start((ptr_t)asyncIrqLoop);
+
+//***************************Added by James assignment4a
+
+mword startTime = CPU::readTSC();
+Clock::wait(1000);
+mword endTime = CPU::readTSC();
+cyclesPerSecond = endTime - startTime;
+
+//*****************************************************
+
 }
 
 void Machine::bootCleanup() {
@@ -430,6 +441,7 @@ void Machine::bootCleanup() {
   // VM addresses from above are not reused, thus no TLB invalidation needed
   DBG::outl(DBG::Boot, "FM/boot:", frameManager);
   DBG::outl(DBG::Boot, "AS/boot: ", kernelSpace);
+
 }
 
 void Machine::bootMain() {
