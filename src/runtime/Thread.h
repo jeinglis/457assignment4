@@ -34,6 +34,8 @@ class Thread : public EmbeddedList<Thread>::Link {
   mword priority;           // scheduling priority
   bool affinity;            // stick with scheduler
   Scheduler* nextScheduler; // resume on same core (for now)
+  mword virtualRuntime;	    //Added for Assignment 4b holds the threads virtual runtime
+  mword actualRuntime;	    //Added for Assignment 4b holds the threads actual runtime
 
   Runtime::MachContext ctx;
   Runtime::ThreadStats stats;
@@ -57,6 +59,10 @@ public:
   static Thread* create(size_t ss);
   static Thread* create();
   void destroy();
+  void getVR();
+  void setVR();
+  void getAR();
+  void setAR();
   void start(ptr_t func, ptr_t p1 = nullptr, ptr_t p2 = nullptr, ptr_t p3 = nullptr);
   void direct(ptr_t func, ptr_t p1 = nullptr, ptr_t p2 = nullptr, ptr_t p3 = nullptr, ptr_t p4 = nullptr);
   void cancel();

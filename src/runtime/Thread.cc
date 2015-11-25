@@ -36,6 +36,23 @@ Thread* Thread::create() {
   return create(defaultStack);
 }
 
+void Thread::getVR(){
+
+
+}
+
+void Thread::setVR(){
+
+}
+
+void Thread::getAR(){
+
+}
+
+void Thread::setAR(){
+
+}
+
 void Thread::destroy() {
   GENASSERT1(state == Finishing, state);
   Runtime::debugT("Thread destroy: ", FmtHex(stackBottom), '/', FmtHex(stackSize), '/', FmtHex(this));
