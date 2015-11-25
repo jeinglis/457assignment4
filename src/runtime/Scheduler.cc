@@ -40,8 +40,10 @@ static inline void unlock() {}
 
 
 //Written by James*********
-int defaultEpoch = 20;
-int minimumGranularity = 4;
+mword defaultEpoch = 20;
+mword minimumGranularity = 4;
+mword totalPriority = 0;
+mword epochSize = defaultEpoch;
 //*************************
 
 template<typename... Args>
@@ -67,7 +69,11 @@ inline void Scheduler::switchThread(Scheduler* target, Args&... a) {
       // ************************************************************************//
 
       readyCount -= 1;
-//put code here pop from tree change total priority calc epoch siez
+//*********** change total priority calc epoch size
+   totalPriority -= nextThread.priority;
+   calculateEpochSize();
+//***********************************************************
+
       goto threadFound;
     }
   }
@@ -141,14 +147,15 @@ void Scheduler::enqueue(Thread& t) {//instead of adding to que add to tree chang
   // Replace with AVLTree implementation
 
   t.incrementVR(); // increment the virtual runtime for thread 't'
-
+  
   readyQueue[t.priority].push_back(t);
   // AVL Tree implementation:
   //readyQueue.insert(t);
   // ***************************************************************************** //
   bool wake = (readyCount == 0);
-  totalPriority += t.priority();
+  totalPriority += t.priority();//increment scheduler tree 
   readyCount += 1;
+  calculateEpochSize();
   readyLock.release();
   Runtime::debugS("Thread ", FmtHex(&t), " queued on ", FmtHex(this));
   if (wake) Runtime::wakeUp(this);
