@@ -40,8 +40,8 @@ static inline void unlock() {}
 
 
 //Written by James*********
-static int defaultEpoch;
-static int minimumGranularity;
+int defaultEpoch = 20;
+int minimumGranularity = 4;
 //*************************
 
 template<typename... Args>
@@ -67,6 +67,7 @@ inline void Scheduler::switchThread(Scheduler* target, Args&... a) {
       // ************************************************************************//
 
       readyCount -= 1;
+//put code here pop from tree change total priority calc epoch siez
       goto threadFound;
     }
   }
@@ -88,6 +89,7 @@ threadFound:
   Runtime::debugS("Thread switch <", (target ? 'Y' : 'S'), ">: ", FmtHex(currThread), '(', FmtHex(currThread->stackPointer), ") to ", FmtHex(nextThread), '(', FmtHex(nextThread->stackPointer), ')');
 
   Runtime::MemoryContext& ctx = Runtime::getMemoryContext();
+// put code here calc time slice and timeserved and take snapshot of TSC
   Runtime::setCurrThread(nextThread);
   Thread* prevThread = stackSwitch(currThread, target, &currThread->stackPointer, nextThread->stackPointer);
   // REMEMBER: Thread might have migrated from other processor, so 'this'
@@ -101,6 +103,25 @@ threadFound:
   }
 }
 
+//void Scheduler::switchThread(Thread& t){
+	//a)find next thread
+	//node minNode = get min node from tree
+	//minVT = minNode -> VT;
+	//minNode -> VT = 0;
+	//readyCount -= 1;
+	//readyPriority -= minNode -> priority;
+	//calculate Epoch
+	//do part b;
+
+	//b)shifting
+	//timeServed = 0;
+	//timeToBeServed = epoch *(priority/totalPriority) //totalPriority = total
+	//prevTSC = CPU::readTSC();
+	//::set(); ///not sure what that was supposed to mean
+//}
+
+
+
 extern "C" Thread* postSwitch(Thread* prevThread, Scheduler* target) {
   CHECK_LOCK_COUNT(1);
   if fastpath(target) Scheduler::resume(*prevThread);
@@ -113,7 +134,7 @@ extern "C" void invokeThread(Thread* prevThread, Runtime::MemoryContext* ctx, fu
   Runtime::getScheduler()->terminate();
 }
 
-void Scheduler::enqueue(Thread& t) {
+void Scheduler::enqueue(Thread& t) {//instead of adding to que add to tree change total priority and epoch size 
   GENASSERT1(t.priority < maxPriority, t.priority);
   readyLock.acquire();
   // ***************************************************************************** //
@@ -148,18 +169,18 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
   switchThread(target);
 #endif
 }
-
+//at every interupt look at TSC taken at switch take another snapshot of TSC on combine 
 void Scheduler::suspend(BasicLock& lk) {
   Runtime::FakeLock fl;
   switchThread(nullptr, lk);
 }
 
-void Scheduler::suspend(BasicLock& lk1, BasicLock& lk2) {
+void Scheduler::suspend(BasicLock& lk1, BasicLock& lk2) {//when something goes ot sleep
   Runtime::FakeLock fl;
   switchThread(nullptr, lk1, lk2);
 }
 
-void Scheduler::terminate() {
+void Scheduler::terminate() {//called when thread completely done
   Runtime::RealLock rl;
   Thread* thr = Runtime::getCurrThread();
   GENASSERT1(thr->state != Thread::Blocked, thr->state);
@@ -167,3 +188,44 @@ void Scheduler::terminate() {
   switchThread(nullptr);
   unreachable();
 }
+
+//**********written for Assignment4b*********
+void Scheduler::calculateEpochSize(){
+	
+	mword temp = (readyCount +1) * minimumGranularity;
+	if(temp>defaultEpoch)
+		epochSize=temp;
+	else
+		epochSize = defaultEpoch;
+}
+
+
+
+//void Scheduler::enqueue(Thread& t){
+
+	//t.virtualTime += minVT;
+	//pushed
+	//readyCount +=1;
+	//readyPriority += t.priority;
+	//calculateEpochSize;
+//}
+
+//void Scheduler::preempt(){
+	//currTSC = CPU::readTSC();
+	//diff
+	//timeServed += diff;
+	//if(timeServed >= timeToServe)
+	//	switchThread(this);
+	//else
+	//	prevTSC = ...... //not sure what was supposed to be here	
+
+//}
+
+
+
+
+
+
+
+
+//*****************************************

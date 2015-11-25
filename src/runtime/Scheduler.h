@@ -26,6 +26,7 @@ class Scheduler {
   friend void Runtime::idleLoop(Scheduler*);
   bufptr_t idleStack[minimumStack];
 
+
   // very simple N-class prio scheduling
   BasicLock readyLock;
   volatile mword readyCount;
@@ -54,9 +55,11 @@ class Scheduler {
   const Scheduler& operator=(const Scheduler&) = delete; // no assignment
 
 public:
+  mword epochSize;
   Scheduler();
   void setPartner(Scheduler& s) { partner = &s; }
   static void resume(Thread& t);
+  void calculateEpochSize();
   void preempt();
   void suspend(BasicLock& lk);
   void suspend(BasicLock& lk1, BasicLock& lk2);
