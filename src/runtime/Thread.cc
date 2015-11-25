@@ -58,4 +58,21 @@ void Thread::cancel() {
     unblockInfo->cancelBlocking(*this);
     Scheduler::resume(*this);
   }
+
+
+  //***************************************************************************
+  // Operator overloading - Brad
+  Thread& Thread::operator==(const Thread& rhs)	{
+    
+  }
+
+  Thread& Thread::operator<<(const Thread& rhs) {
+  
+  }
+  
+  Thread& Thread::operator>>(const Thread& rhs) {
+  
+  }
+
+  
 }
