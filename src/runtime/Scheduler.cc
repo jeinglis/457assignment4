@@ -44,6 +44,8 @@ mword defaultEpoch = 20;
 mword minimumGranularity = 4;
 mword totalPriority = 0;
 mword epochSize = defaultEpoch;
+mword startTime = 0; //set in switch when thread is popped from tree
+mword currTime = 0; //set in preempt to calculate timeServed
 //*************************
 
 template<typename... Args>
@@ -95,7 +97,11 @@ threadFound:
   Runtime::debugS("Thread switch <", (target ? 'Y' : 'S'), ">: ", FmtHex(currThread), '(', FmtHex(currThread->stackPointer), ") to ", FmtHex(nextThread), '(', FmtHex(nextThread->stackPointer), ')');
 
   Runtime::MemoryContext& ctx = Runtime::getMemoryContext();
-// put code here calc time slice and timeserved and take snapshot of TSC
+//***************************************
+ //grab startTime = TSC
+ //calculate time served
+ //calculate time slice 
+//********************************************
   Runtime::setCurrThread(nextThread);
   Thread* prevThread = stackSwitch(currThread, target, &currThread->stackPointer, nextThread->stackPointer);
   // REMEMBER: Thread might have migrated from other processor, so 'this'
