@@ -26,6 +26,7 @@ class Scheduler {
   friend void Runtime::idleLoop(Scheduler*);
   bufptr_t idleStack[minimumStack];
 
+
   // very simple N-class prio scheduling
   BasicLock readyLock;
   volatile mword readyCount; 

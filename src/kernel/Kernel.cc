@@ -27,8 +27,8 @@
 
 AddressSpace kernelSpace(true); // AddressSpace.h
 volatile mword Clock::tick;     // Clock.h
-static int defaultEpochLength = 20;
-static int schedMinGranularity = 4;
+static int defaultEpochLength = 20; //added Assignment 4a
+static int schedMinGranularity = 4;//added Assignment 4a
 
 extern Keyboard keyboard;
 
@@ -92,7 +92,7 @@ void kosMain() {
             else
                 KOUT::out1(c);
         }
-        //KOUT::outl();
+
     }
     defaultEpochLength = defaultEpochLength * (Machine::cyclesPerSecond/1000);
     schedMinGranularity = schedMinGranularity * (Machine::cyclesPerSecond/1000);

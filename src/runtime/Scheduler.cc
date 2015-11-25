@@ -33,8 +33,8 @@ static inline void unlock() {}
 
 
 //Written by James*********
-static int defaultEpoch;
-static int minimumGranularity;
+int defaultEpoch = 20;
+int minimumGranularity = 4;
 //*************************
 
 template<typename... Args>
@@ -149,3 +149,60 @@ void Scheduler::terminate() {
   switchThread(nullptr);
   unreachable();
 }
+
+//**********written for Assignment4b*********
+//void Scheduler::calculateEpochSize(){
+	
+	//temp = (readyCount +1) * minGranularity;
+	//if(temp>defaultEpochSize)
+	//	epochSize=temp;
+	//else
+	//	epochSize = defaultEpoch;
+//}
+
+//void Scheduler::switchThread(Thread& t){
+	//a)find next thread
+	//node minNode = get min node from tree
+	//minVT = minNode -> VT;
+	//minNode -> VT = 0;
+	//readyCount -= 1;
+	//readyPriority -= minNode -> priority;
+	//calculate Epoch
+	//do part b;
+
+	//b)shifting
+	//timeServed = 0;
+	//timeToBeServed = epoch *(priority/totalPriority) //totalPriority = total
+	//prevTSC = CPU::readTSC();
+	//::set(); ///not sure what that was supposed to mean
+//}
+
+
+//void Scheduler::enqueue(Thread& t){
+
+	//t.virtualTime += minVT;
+	//pushed
+	//readyCount +=1;
+	//readyPriority += t.priority;
+	//calculateEpochSize;
+//}
+
+//void Scheduler::preempt(){
+	//currTSC = CPU::readTSC();
+	//diff
+	//timeServed += diff;
+	//if(timeServed >= timeToServe)
+	//	switchThread(this);
+	//else
+	//	prevTSC = ...... //not sure what was supposed to be here	
+
+//}
+
+
+
+
+
+
+
+
+//*****************************************
