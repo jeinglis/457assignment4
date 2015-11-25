@@ -139,16 +139,30 @@ void Scheduler::enqueue(Thread& t) {//instead of adding to que add to tree chang
   readyLock.acquire();
   // ***************************************************************************** //
   // Replace with AVLTree implementation
+
+  t.incrementVR(); // increment the virtual runtime for thread 't'
+
   readyQueue[t.priority].push_back(t);
   // AVL Tree implementation:
-  // readyQueue.insert(t);
+  //readyQueue.insert(t);
   // ***************************************************************************** //
   bool wake = (readyCount == 0);
+  totalPriority += t.priority();
   readyCount += 1;
   readyLock.release();
   Runtime::debugS("Thread ", FmtHex(&t), " queued on ", FmtHex(this));
   if (wake) Runtime::wakeUp(this);
 }
+
+//void Scheduler::enqueue(Thread& t){
+
+	//t.virtualTime += minVT;
+	//pushed
+	//readyCount +=1;
+	//readyPriority += t.priority;
+	//calculateEpochSize;
+//}
+
 
 void Scheduler::resume(Thread& t) {
   GENASSERT1(&t != Runtime::getCurrThread(), Runtime::getCurrThread());
@@ -198,17 +212,6 @@ void Scheduler::calculateEpochSize(){
 	else
 		epochSize = defaultEpoch;
 }
-
-
-
-//void Scheduler::enqueue(Thread& t){
-
-	//t.virtualTime += minVT;
-	//pushed
-	//readyCount +=1;
-	//readyPriority += t.priority;
-	//calculateEpochSize;
-//}
 
 //void Scheduler::preempt(){
 	//currTSC = CPU::readTSC();

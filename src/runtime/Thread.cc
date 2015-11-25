@@ -37,20 +37,27 @@ Thread* Thread::create() {
 }
 
 void Thread::getVR(){
-
-
+  return virtualRuntime;
 }
 
-void Thread::setVR(){
-
+void Thread::setVR(int newRuntime){
+  virtualRuntime = newRuntime;
 }
 
 void Thread::getAR(){
-
+ 
 }
 
 void Thread::setAR(){
 
+}
+
+void Thread::incrementVR()	{
+  virtualRuntime += 1;
+}
+
+void Thread::priority()	{
+  return priority;
 }
 
 void Thread::destroy() {

@@ -61,8 +61,10 @@ public:
   Thread& operator<(const Thread& rhs); //
   Thread& operator>(const Thread& rhs); //
   //************************************//
+  void incrementVR();
   static Thread* create(size_t ss);
   static Thread* create();
+  void priority();
   void destroy();
   void getVR();
   void setVR();
