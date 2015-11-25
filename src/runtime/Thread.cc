@@ -75,4 +75,27 @@ void Thread::cancel() {
     unblockInfo->cancelBlocking(*this);
     Scheduler::resume(*this);
   }
+
+  //*********************  Operator overloading *********************************//
+
+  Thread& Thread::operator==(const Thread& rhs)	{
+  	if (this.virtualRuntime == rhs.getVR())	{
+		return true;
+	}
+	return false;
+  }
+
+  Thread& Thread::operator<(const Thread& rhs)	{
+	if (this.virtualRuntime < rhs.getVR())
+		return true;
+	return false;
+  }
+
+  Thread& Thread::operator>(const Thread& rhs)	{
+	if (this.virtualRuntime > rhs.getVM())
+		return true;
+	return false;
+  }
+
+  //*****************************************************************************//
 }
