@@ -94,6 +94,7 @@ void kosMain() {
         }
 
     }
+
     defaultEpochLength = defaultEpochLength * (Machine::cyclesPerSecond/1000);
     schedMinGranularity = schedMinGranularity * (Machine::cyclesPerSecond/1000);
     

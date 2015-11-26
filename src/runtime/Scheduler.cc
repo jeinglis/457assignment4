@@ -21,6 +21,17 @@
 #include "kernel/Output.h"
 #include "generic/AVLTree.h"
 
+
+//added by James*********
+mword defaultEpochLength;//default epoch in clock cycles
+mword schedMinGranularity;//minimumGranularity in cycles
+mword totalPriority = 0;//set in enqueue
+mword prevTSC = 0; //set in switch when thread is popped from tree
+mword currTSC = 0; //set in preempt to calculate timeServed
+//*************************
+
+
+
 Scheduler::Scheduler() : readyCount(0), preemption(0), resumption(0), partner(this) {
   Thread* idleThread = Thread::create((vaddr)idleStack, minimumStack);
   idleThread->setAffinity(this)->setPriority(idlePriority);
@@ -32,21 +43,17 @@ Scheduler::Scheduler() : readyCount(0), preemption(0), resumption(0), partner(th
   // Reference to ready queue, changing to use AVLTree: *************  Brad
   readyQueue[idlePriority].push_back(*idleThread);
 // ********************************************************************************//
-
+	
   readyCount += 1;
 }
+
+
+
 
 static inline void unlock() {}
 
 
-//Written by James*********
-mword defaultEpoch = 20;
-mword minimumGranularity = 4;
-mword epochSize = defaultEpoch;
-mword totalPriority = 0;//set in enqueue
-mword prevTSC = 0; //set in switch when thread is popped from tree
-mword currTSC = 0; //set in preempt to calculate timeServed
-//*************************
+
 
 template<typename... Args>
 static inline void unlock(BasicLock &l, Args&... a) {
@@ -56,6 +63,23 @@ static inline void unlock(BasicLock &l, Args&... a) {
 
 // very simple N-class prio scheduling!
 template<typename... Args>
+
+
+/*
+*There are two parts to are modified switchThread
+******part A)find next thread
+*pops the minNode from our AVL tree 
+*sets the minimum Virtual Time to the nodes virtual time
+*changes the nodes virtual time to 0.
+*decrements the AVL tree readyCount by one and the totalPrioity by node->priority
+*recalculate the epoch
+*goes to part B
+******Part B)shifting
+*set time served to 0
+*calculates the timesSlice to be given to the task
+*takes a TSC snapshot to be used in preempt
+*set the task to be executed
+*/
 inline void Scheduler::switchThread(Scheduler* target, Args&... a) {
   preemption += 1;
   CHECK_LOCK_MIN(sizeof...(Args));
@@ -125,6 +149,13 @@ extern "C" void invokeThread(Thread* prevThread, Runtime::MemoryContext* ctx, fu
   Runtime::getScheduler()->terminate();
 }
 
+
+/*
+*the original enqueue has been modified to push to our AVL Tree rather than the queue 
+*we have also modified it to check the minimum virtual time of the scheduler AVL tree being enqueue *to incase the task is far behind and will be given unfair execution time trying to catch up. 
+*our enqueue also incements the readyCount aswell as the totalPriorit of the tree. 
+*the Epoch size is then recalculated.
+*/
 void Scheduler::enqueue(Thread& t) {
   GENASSERT1(t.priority < maxPriority, t.priority);
   readyLock.acquire();
@@ -138,13 +169,11 @@ void Scheduler::enqueue(Thread& t) {
   //readyQueue.insert(new Node(t));
   // ***************************************************************************** //
   bool wake = (readyCount == 0);
-	//added if statement incase thread is added to a scheduler with high minVT so it doesn't run
-	//unfairly long to catch up.
 	if(t.getVR()< minimumVirtualTime){
 		mword adjustedVR = t.getVR()+ minimumVirtualTime;
 		t.setVR(adjustedVR);
 	}
-  totalPriority += t.getPriority();//increment scheduler tree priority
+  totalPriority += t.getPriority();
   readyCount += 1;
   calculateEpochSize();
   readyLock.release();
@@ -158,6 +187,17 @@ void Scheduler::resume(Thread& t) {
   else Runtime::getScheduler()->enqueue(t);
 }
 
+
+
+
+/*
+*Preempt is called evertime there is an interupt 
+*our implementation of preempt calculates the difference between the TSC snapshot
+*taken at last interupt and the current TSC snapshot if the difference plus the 
+*previous time served is equal to the time slice given to the task 
+*a scheduler is selected based on affinity and switchThread is called.
+*else a new TSC snapshot is taken and the task is allowed to continue
+*/
 void Scheduler::preempt() {               // IRQs disabled, lock count inflated
 //*******************Added by James ...maybe kinda right? -> RIGHT! -.-  ********************
 	currTSC = CPU::readTSC();
@@ -172,6 +212,7 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
 	//	prevTSC = CPU::readTSC();
 	//	Runtime::setCurrThread(Runtime::getCurrThread());//not sure if we need to do this?
 //***********************************
+
 #if TESTING_NEVER_MIGRATE
   switchThread(this);
 #else /* migration enabled */
@@ -204,15 +245,16 @@ void Scheduler::terminate() {//called when thread completely done
   unreachable();
 }
 
-//**********written for Assignment4b*********
+/**********written for Assignment4b*********
+*calculate the epoch size to be used by the schduler. 
+*if the calculated epoch size needs to be larger than the default us that
+*else use the default epoch Length
+*/
 void Scheduler::calculateEpochSize(){
 
-	mword temp = (readyCount +1) * minimumGranularity;
-	if(temp>defaultEpoch)
+	mword temp = (readyCount +1) * schedMinGranularity;
+	if(temp>defaultEpochLength)
 		epochSize=temp;
 	else
-		epochSize = defaultEpoch;
+		epochSize = defaultEpochLength;
 }
-
-
-//*****************************************

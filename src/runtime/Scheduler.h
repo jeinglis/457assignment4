@@ -22,14 +22,8 @@
 
 class Thread;
 
-class Scheduler {
-  friend void Runtime::idleLoop(Scheduler*);
-  bufptr_t idleStack[minimumStack];
 
-
-  // very simple N-class prio scheduling
-  BasicLock readyLock;
-  volatile mword readyCount;//number of nodes in the tree (doesn't include the poped node)
+  
 //*******************James******
   static mword epochSize;
   static mword minimumGranularity; 
@@ -37,6 +31,20 @@ class Scheduler {
   mword timeSlice;
   mword timeServed;
 //*****************************
+
+
+
+class Scheduler {
+  friend void Runtime::idleLoop(Scheduler*);
+  bufptr_t idleStack[minimumStack];
+
+
+ 
+
+  // very simple N-class prio scheduling
+  BasicLock readyLock;
+  volatile mword readyCount;//number of nodes in the tree (doesn't include the poped node)
+
 
 
   //*****************************************************************//
@@ -62,7 +70,7 @@ class Scheduler {
   const Scheduler& operator=(const Scheduler&) = delete; // no assignment
 
 public:
-  
+
   
   Scheduler();
   void setPartner(Scheduler& s) { partner = &s; }

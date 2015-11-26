@@ -33,31 +33,3 @@ cdi_glue.o: cdi_glue.cc \
  /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../devices/PCI.h \
  include/cdi.h include/cdi-osdep.h include/cdi/lists.h include/cdi/pci.h \
  include/cdi/mem.h include/cdi/misc.h include/cdi/net.h
-cdi_glue.o: cdi_glue.cc \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../testoptions.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../runtime/BlockingSync.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../generic/EmbeddedContainers.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../generic/basics.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../include/kostypes.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../kernel/OutputBasic.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../runtime/Runtime.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../kernel/AddressSpace.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../kernel/FrameManager.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../generic/Bitmap.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../generic/bitmanip.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../kernel/MemoryManager.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../machine/Memory.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../machine/asmshare.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../machine/SpinLock.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../machine/CPU.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../machine/Processor.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../machine/asmdecl.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../machine/Descriptors.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../kernel/Output.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../machine/Paging.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../machine/Machine.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../runtime/Scheduler.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../runtime/Thread.h \
- /home/ugc/jeinglis/457assignment4/src/extern/cdi/../../devices/PCI.h \
- include/cdi.h include/cdi-osdep.h include/cdi/lists.h include/cdi/pci.h \
- include/cdi/mem.h include/cdi/misc.h include/cdi/net.h

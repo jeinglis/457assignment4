@@ -38,7 +38,9 @@ class Machine : public NoObject {
   static void bootCleanup();
 
 public:
+	//***added by for assignment 4a
   static mword cyclesPerSecond;
+	//********************
   static void initAP(mword idx)                        __section(".boot.text");
   static void initBSP(mword mag, vaddr mb, mword idx)  __section(".boot.text");
   static void bootMain();
