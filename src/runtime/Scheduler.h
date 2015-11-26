@@ -29,14 +29,23 @@ class Scheduler {
 
   // very simple N-class prio scheduling
   BasicLock readyLock;
-  volatile mword readyCount;
+  volatile mword readyCount;//number of nodes in the tree (doesn't include the poped node)
+//*******************James******
+  static mword epochSize;
+  static mword minimumGranularity; 
+  mword totalPriority;
+  mword minimumVirtualTime;
+  mword timeSlice;
+  mword timeServed;
+  mword prevTSC;
+//*****************************
 
 
   //*****************************************************************//
   // Changing to use AVLTree ******************************** Brad
-  EmbeddedList<Thread> readyQueue[maxPriority];
+ // EmbeddedList<Thread> readyQueue[maxPriority];
   // Added AVL tree ******************************* Brad
-  AVLTree<Thread> readyQueue;
+ // AVLTree<Thread> readyQueue;
   //*****************************************************************//
 
 
@@ -55,7 +64,8 @@ class Scheduler {
   const Scheduler& operator=(const Scheduler&) = delete; // no assignment
 
 public:
-  mword epochSize;
+  
+  
   Scheduler();
   void setPartner(Scheduler& s) { partner = &s; }
   static void resume(Thread& t);

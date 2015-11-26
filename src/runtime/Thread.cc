@@ -21,7 +21,12 @@
 #include "runtime/Thread.h"
 #include "kernel/Output.h"
 
-Thread* Thread::create(vaddr mem, size_t ss) {
+timeServed = 0;
+timeToBeServed = 0;
+virtualRuntime = -1;
+
+
+Thread* Thread::create(vaddr mem, size_t ss){
   vaddr This = mem + ss - sizeof(Thread);
   Runtime::debugT("Thread create: ", FmtHex(mem), '/', FmtHex(ss), '/', FmtHex(This));
   return new (ptr_t(This)) Thread(mem, ss);
@@ -42,14 +47,6 @@ void Thread::getVR(){
 
 void Thread::setVR(int newRuntime){
   virtualRuntime = newRuntime;
-}
-
-void Thread::getAR(){
- 
-}
-
-void Thread::setAR(){
-
 }
 
 void Thread::incrementVR()	{

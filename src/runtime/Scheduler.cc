@@ -42,9 +42,9 @@ static inline void unlock() {}
 //Written by James*********
 mword defaultEpoch = 20;
 mword minimumGranularity = 4;
-mword totalPriority = 0;
 mword epochSize = defaultEpoch;
-mword startTime = 0; //set in switch when thread is popped from tree
+mword totalPriority = 0;//set in enqueue
+mword prevTSC = 0; //set in switch when thread is popped from tree
 mword currTime = 0; //set in preempt to calculate timeServed
 //*************************
 
@@ -64,16 +64,14 @@ inline void Scheduler::switchThread(Scheduler* target, Args&... a) {
   for (mword i = 0; i < (target ? idlePriority : maxPriority); i += 1) {
     // **************************************************************************//
     if (!readyQueue[i].empty()) {
-      // Reference to readyQueue, changing to use AVL tree ***** Brad
-      nextThread = readyQueue[i].pop_front();
-
+      nextThread = readyQueue[i].pop_front(); //Reference to readyQueue, changing to use AVL tree 
       // nextThread = readyQueue.removeMin();
       // ************************************************************************//
-
       readyCount -= 1;
-//*********** change total priority calc epoch size
-   totalPriority -= nextThread.priority;
-   calculateEpochSize();
+//***********James 4b change total priority calc epoch size
+		minimumVirtualTime = nextThread.getVR();
+ 		totalPriority -= nextThread.priority;
+		calculateEpochSize();
 //***********************************************************
 
       goto threadFound;
@@ -98,9 +96,9 @@ threadFound:
 
   Runtime::MemoryContext& ctx = Runtime::getMemoryContext();
 //***************************************
- //grab startTime = TSC
- //calculate time served
- //calculate time slice 
+	timeServed = 0;
+	timeSlice = (epochSize * (nextThread.priority/totalPriority));
+	prevTSC = CPU::readTSC();
 //********************************************
   Runtime::setCurrThread(nextThread);
   Thread* prevThread = stackSwitch(currThread, target, &currThread->stackPointer, nextThread->stackPointer);
@@ -115,25 +113,6 @@ threadFound:
   }
 }
 
-//void Scheduler::switchThread(Thread& t){
-	//a)find next thread
-	//node minNode = get min node from tree
-	//minVT = minNode -> VT;
-	//minNode -> VT = 0;
-	//readyCount -= 1;
-	//readyPriority -= minNode -> priority;
-	//calculate Epoch
-	//do part b;
-
-	//b)shifting
-	//timeServed = 0;
-	//timeToBeServed = epoch *(priority/totalPriority) //totalPriority = total
-	//prevTSC = CPU::readTSC();
-	//::set(); ///not sure what that was supposed to mean
-//}
-
-
-
 extern "C" Thread* postSwitch(Thread* prevThread, Scheduler* target) {
   CHECK_LOCK_COUNT(1);
   if fastpath(target) Scheduler::resume(*prevThread);
@@ -146,7 +125,7 @@ extern "C" void invokeThread(Thread* prevThread, Runtime::MemoryContext* ctx, fu
   Runtime::getScheduler()->terminate();
 }
 
-void Scheduler::enqueue(Thread& t) {//instead of adding to que add to tree change total priority and epoch size 
+void Scheduler::enqueue(Thread& t) {
   GENASSERT1(t.priority < maxPriority, t.priority);
   readyLock.acquire();
   // ***************************************************************************** //
@@ -159,23 +138,17 @@ void Scheduler::enqueue(Thread& t) {//instead of adding to que add to tree chang
   //readyQueue.insert(t);
   // ***************************************************************************** //
   bool wake = (readyCount == 0);
-  totalPriority += t.priority();//increment scheduler tree 
+	//added if statement incase thread is added to a scheduler with high minVT so it doesn't run
+	//unfairly long to catch up. 
+	if(t.getVR()<minVT)
+		t.setVR(t.getVR()+=minVT);
+  totalPriority += t.priority();//increment scheduler tree priority
   readyCount += 1;
   calculateEpochSize();
   readyLock.release();
   Runtime::debugS("Thread ", FmtHex(&t), " queued on ", FmtHex(this));
   if (wake) Runtime::wakeUp(this);
 }
-
-//void Scheduler::enqueue(Thread& t){
-
-	//t.virtualTime += minVT;
-	//pushed
-	//readyCount +=1;
-	//readyPriority += t.priority;
-	//calculateEpochSize;
-//}
-
 
 void Scheduler::resume(Thread& t) {
   GENASSERT1(&t != Runtime::getCurrThread(), Runtime::getCurrThread());
@@ -184,6 +157,19 @@ void Scheduler::resume(Thread& t) {
 }
 
 void Scheduler::preempt() {               // IRQs disabled, lock count inflated
+//*******************Added by James ...maybe kinda right?********************
+	currTSC = CPU::readTSC();
+	mword diff = prevTSC - currTSC;
+	timeServed += diff;
+	//if(timeServed >= timeSlice)
+				//**choosing which scheduler to run on taken from their preemt code**
+	//	Scheduler* target = Runtime::getCurrThread()->getAffinity(); 
+	//	if (!target) target = (partner->readyCount + 2 < readyCount) ? partner : this; 
+	//	switchThread(target);
+	//else //keep executing current thread
+	//	prevTSC = CPU::readTSC();
+	//	Runtime::setCurrThread(Runtime::getCurrThread());//not sure if we need to do this?
+//***********************************
 #if TESTING_NEVER_MIGRATE
   switchThread(this);
 #else /* migration enabled */
@@ -196,7 +182,7 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
   switchThread(target);
 #endif
 }
-//at every interupt look at TSC taken at switch take another snapshot of TSC on combine 
+
 void Scheduler::suspend(BasicLock& lk) {
   Runtime::FakeLock fl;
   switchThread(nullptr, lk);
@@ -225,23 +211,6 @@ void Scheduler::calculateEpochSize(){
 	else
 		epochSize = defaultEpoch;
 }
-
-//void Scheduler::preempt(){
-	//currTSC = CPU::readTSC();
-	//diff
-	//timeServed += diff;
-	//if(timeServed >= timeToServe)
-	//	switchThread(this);
-	//else
-	//	prevTSC = ...... //not sure what was supposed to be here	
-
-//}
-
-
-
-
-
-
 
 
 //*****************************************
