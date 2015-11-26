@@ -45,7 +45,7 @@ mword minimumGranularity = 4;
 mword epochSize = defaultEpoch;
 mword totalPriority = 0;//set in enqueue
 mword prevTSC = 0; //set in switch when thread is popped from tree
-mword currTime = 0; //set in preempt to calculate timeServed
+mword currTSC = 0; //set in preempt to calculate timeServed
 //*************************
 
 template<typename... Args>
@@ -69,8 +69,8 @@ inline void Scheduler::switchThread(Scheduler* target, Args&... a) {
       // ************************************************************************//
       readyCount -= 1;
 //***********James 4b change total priority calc epoch size
-		minimumVirtualTime = nextThread.getVR();
- 		totalPriority -= nextThread.priority;
+		minimumVirtualTime = nextThread->getVR();
+ 		totalPriority -= nextThread->getPriority();
 		calculateEpochSize();
 //***********************************************************
 
@@ -97,7 +97,7 @@ threadFound:
   Runtime::MemoryContext& ctx = Runtime::getMemoryContext();
 //***************************************
 	timeServed = 0;
-	timeSlice = (epochSize * (nextThread.priority/totalPriority));
+	timeSlice = (epochSize * (nextThread->getPriority()/totalPriority));
 	prevTSC = CPU::readTSC();
 //********************************************
   Runtime::setCurrThread(nextThread);
@@ -140,9 +140,11 @@ void Scheduler::enqueue(Thread& t) {
   bool wake = (readyCount == 0);
 	//added if statement incase thread is added to a scheduler with high minVT so it doesn't run
 	//unfairly long to catch up. 
-	if(t.getVR()<minVT)
-		t.setVR(t.getVR()+=minVT);
-  totalPriority += t.priority();//increment scheduler tree priority
+	if(t.getVR()< minimumVirtualTime){
+		mword adjustedVR = t.getVR()+ minimumVirtualTime;
+		t.setVR(adjustedVR);
+	}
+  totalPriority += t.getPriority();//increment scheduler tree priority
   readyCount += 1;
   calculateEpochSize();
   readyLock.release();

@@ -21,9 +21,9 @@
 #include "runtime/Thread.h"
 #include "kernel/Output.h"
 
-timeServed = 0;
-timeToBeServed = 0;
-virtualRuntime = -1;
+mword timeServed = 0;
+mword timeToBeServed = 0;
+mword virtualRuntime = -1;
 
 
 Thread* Thread::create(vaddr mem, size_t ss){
@@ -41,11 +41,11 @@ Thread* Thread::create() {
   return create(defaultStack);
 }
 
-void Thread::getVR(){
+mword Thread::getVR(){
   return virtualRuntime;
 }
 
-void Thread::setVR(int newRuntime){
+void Thread::setVR(mword newRuntime){
   virtualRuntime = newRuntime;
 }
 
@@ -53,7 +53,7 @@ void Thread::incrementVR()	{
   virtualRuntime += 1;
 }
 
-void Thread::priority()	{
+mword Thread::getPriority()	{
   return priority;
 }
 
@@ -79,27 +79,29 @@ void Thread::cancel() {
     unblockInfo->cancelBlocking(*this);
     Scheduler::resume(*this);
   }
+}
 
   //*********************  Operator overloading *********************************//
 
   Thread& Thread::operator==(const Thread& rhs)	{
-  	if (this.virtualRuntime == rhs.getVR())	{
+  	if (this->virtualRuntime == rhs.getVR())	{
 		return true;
-	}
+		}
 	return false;
   }
 
   Thread& Thread::operator<(const Thread& rhs)	{
-	if (this.virtualRuntime < rhs.getVR())
+	if (this->virtualRuntime < rhs.getVR())
 		return true;
 	return false;
   }
 
   Thread& Thread::operator>(const Thread& rhs)	{
-	if (this.virtualRuntime > rhs.getVM())
+	if (this->virtualRuntime > rhs.getVM())
 		return true;
 	return false;
   }
 
   //*****************************************************************************//
-}
+
+

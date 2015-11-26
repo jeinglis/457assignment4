@@ -33,17 +33,15 @@ class Scheduler {
 //*******************James******
   static mword epochSize;
   static mword minimumGranularity; 
-  mword totalPriority;
   mword minimumVirtualTime;
   mword timeSlice;
   mword timeServed;
-  mword prevTSC;
 //*****************************
 
 
   //*****************************************************************//
   // Changing to use AVLTree ******************************** Brad
- // EmbeddedList<Thread> readyQueue[maxPriority];
+  EmbeddedList<Thread> readyQueue[maxPriority];
   // Added AVL tree ******************************* Brad
  // AVLTree<Thread> readyQueue;
   //*****************************************************************//
