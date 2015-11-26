@@ -64,8 +64,8 @@ inline void Scheduler::switchThread(Scheduler* target, Args&... a) {
   for (mword i = 0; i < (target ? idlePriority : maxPriority); i += 1) {
     // **************************************************************************//
     if (!readyQueue[i].empty()) {
-      nextThread = readyQueue[i].pop_front(); //Reference to readyQueue, changing to use AVL tree 
-      // nextThread = readyQueue.removeMin();
+      nextThread = readyQueue[i].pop_front(); //Reference to readyQueue, changing to use AVL tree
+      // nextThread = readyQueue.removeMin().getItem();  // Brad - Changed to .getItem to actually get thread
       // ************************************************************************//
       readyCount -= 1;
 //***********James 4b change total priority calc epoch size
@@ -132,14 +132,14 @@ void Scheduler::enqueue(Thread& t) {
   // Replace with AVLTree implementation
 
   t.incrementVR(); // increment the virtual runtime for thread 't'
-  
+
   readyQueue[t.priority].push_back(t);
   // AVL Tree implementation:
-  //readyQueue.insert(t);
+  //readyQueue.insert(new Node(t));
   // ***************************************************************************** //
   bool wake = (readyCount == 0);
 	//added if statement incase thread is added to a scheduler with high minVT so it doesn't run
-	//unfairly long to catch up. 
+	//unfairly long to catch up.
 	if(t.getVR()< minimumVirtualTime){
 		mword adjustedVR = t.getVR()+ minimumVirtualTime;
 		t.setVR(adjustedVR);
@@ -159,14 +159,14 @@ void Scheduler::resume(Thread& t) {
 }
 
 void Scheduler::preempt() {               // IRQs disabled, lock count inflated
-//*******************Added by James ...maybe kinda right?********************
+//*******************Added by James ...maybe kinda right? -> RIGHT! -.-  ********************
 	currTSC = CPU::readTSC();
 	mword diff = prevTSC - currTSC;
 	timeServed += diff;
 	//if(timeServed >= timeSlice)
 				//**choosing which scheduler to run on taken from their preemt code**
-	//	Scheduler* target = Runtime::getCurrThread()->getAffinity(); 
-	//	if (!target) target = (partner->readyCount + 2 < readyCount) ? partner : this; 
+	//	Scheduler* target = Runtime::getCurrThread()->getAffinity();
+	//	if (!target) target = (partner->readyCount + 2 < readyCount) ? partner : this;
 	//	switchThread(target);
 	//else //keep executing current thread
 	//	prevTSC = CPU::readTSC();
@@ -206,7 +206,7 @@ void Scheduler::terminate() {//called when thread completely done
 
 //**********written for Assignment4b*********
 void Scheduler::calculateEpochSize(){
-	
+
 	mword temp = (readyCount +1) * minimumGranularity;
 	if(temp>defaultEpoch)
 		epochSize=temp;
