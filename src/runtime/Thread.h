@@ -54,17 +54,17 @@ protected:
   static Thread* create(vaddr mem, size_t ss);
 
 public:
-  //**** Operator overloading **********//
-  Thread& operator==(const Thread& rhs);//
-  Thread& operator<(const Thread& rhs); //
-  Thread& operator>(const Thread& rhs); //
-  //************************************//
+  //**** Operator overloading **************//
+  bool operator==(const Thread& rhs) const; //
+  bool operator<(const Thread& rhs) const;  //
+  bool operator>(const Thread& rhs) const;  //
+  //****************************************//
   void incrementVR();
   static Thread* create(size_t ss);
   static Thread* create();
   mword getPriority();
   void destroy();
-  mword getVR();//get virtual runtime assignment4b
+  mword getVR() const;//get virtual runtime assignment4b
   void setVR(mword);//set virtual runtime assignment4b
   void start(ptr_t func, ptr_t p1 = nullptr, ptr_t p2 = nullptr, ptr_t p3 = nullptr);
   void direct(ptr_t func, ptr_t p1 = nullptr, ptr_t p2 = nullptr, ptr_t p3 = nullptr, ptr_t p4 = nullptr);

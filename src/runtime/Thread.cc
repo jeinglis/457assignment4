@@ -41,7 +41,7 @@ Thread* Thread::create() {
   return create(defaultStack);
 }
 
-mword Thread::getVR(){
+mword Thread::getVR() const {
   return virtualRuntime;
 }
 
@@ -83,21 +83,21 @@ void Thread::cancel() {
 
   //*********************  Operator overloading *********************************//
 
-  Thread& Thread::operator==(const Thread& rhs)	{
+  bool Thread::operator==(const Thread& rhs) const	{
   	if (this->virtualRuntime == rhs.getVR())	{
 		return true;
-		}
+	}
 	return false;
   }
 
-  Thread& Thread::operator<(const Thread& rhs)	{
+  bool Thread::operator<(const Thread& rhs) const	{
 	if (this->virtualRuntime < rhs.getVR())
 		return true;
 	return false;
   }
 
-  Thread& Thread::operator>(const Thread& rhs)	{
-	if (this->virtualRuntime > rhs.getVM())
+  bool Thread::operator>(const Thread& rhs) const	{
+	if (this->virtualRuntime > rhs.getVR())
 		return true;
 	return false;
   }
