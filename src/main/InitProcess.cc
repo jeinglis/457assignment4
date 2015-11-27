@@ -17,6 +17,8 @@
 #include "kernel/Process.h"
 
 int InitProcess() {
+  Process* avl = knew<Process>();
+  avl->exec("testAVL");
 /*  
   Process* p0 = knew<Process>();
   p0->exec("systest");
