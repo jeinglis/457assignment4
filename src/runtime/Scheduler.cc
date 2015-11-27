@@ -23,8 +23,6 @@
 
 
 //added by James*********
-//mword Scheduler::defaultEpochSize;//default epoch in clock cycles
-//mword Scheduler::schedMinGranularity;//minimumGranularity in cycles
 mword epochSize;
 mword totalPriority = 0;//set in enqueue
 mword prevTSC = 0; //set in switch when thread is popped from tree

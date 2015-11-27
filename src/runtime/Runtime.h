@@ -31,10 +31,10 @@ typedef ScopedLock<BasicLock> AutoLock;
 class Scheduler;
 class Thread;
 
-static const mword  topPriority = 0;
-static const mword  defPriority = 1;
-static const mword idlePriority = 2;
-static const mword  maxPriority = 3;
+static const mword  topPriority = 1;
+static const mword  defPriority = 2;
+static const mword idlePriority = 3;
+static const mword  maxPriority = 4;
 
 #define CHECK_LOCK_MIN(x) \
   KASSERT1(LocalProcessor::checkLock() > (x), LocalProcessor::getLockCount())
