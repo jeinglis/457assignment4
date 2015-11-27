@@ -32,6 +32,8 @@ mword currTSC = 0; //set in preempt to calculate timeServed
 mword minimumVirtualTime;
 mword timeSlice;
 mword timeServed;
+mword Scheduler::schedMinGranularity; 
+mword Scheduler::defaultEpochSize;
 //*************************
 
 
@@ -259,8 +261,8 @@ void Scheduler::terminate() {//called when thread completely done
 void Scheduler::calculateEpochSize(){
 
 	mword temp = (readyCount +1) * schedMinGranularity;
-	if(temp>defaultEpochLength)
+	if(temp>defaultEpochSize)
 		epochSize=temp;
 	else
-		epochSize = defaultEpochLength;
+		epochSize = defaultEpochSize;
 }
