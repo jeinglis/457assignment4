@@ -63,6 +63,13 @@ class Scheduler {
 
 public:
 //*******************James******
+	mword epochSize;
+	mword totalPriority;//set in enqueue
+	mword prevTSC; //set in switch when thread is popped from tree
+	mword currTSC; //set in preempt to calculate timeServed
+	mword minimumVirtualTime;
+	mword timeSlice;
+	mword timeServed;
   static mword schedMinGranularity; 
 	static mword defaultEpochSize;
 //*****************************

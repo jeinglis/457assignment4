@@ -21,7 +21,7 @@
 #include "runtime/Thread.h"
 #include "kernel/Output.h"
 
-mword virtualRuntime = -1;
+mword virtualRuntime = 0;
 
 
 Thread* Thread::create(vaddr mem, size_t ss){
@@ -79,6 +79,9 @@ void Thread::cancel() {
   }
 }
 
+/*
+*compares the virtual runtime for thread objects for use in our AVL tree
+*/
   //*********************  Operator overloading *********************************//
 
   bool Thread::operator==(const Thread& rhs) const	{
