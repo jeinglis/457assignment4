@@ -19,6 +19,7 @@
 
 #include "generic/EmbeddedContainers.h"
 #include "runtime/Runtime.h"
+#include "generic/AVLTree.h"
 
 class Thread;
 

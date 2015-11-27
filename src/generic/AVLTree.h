@@ -20,7 +20,7 @@ private:
 	Node<T>* root;
 
 	// Operations
-	Node<T>* nodeInsert(Node<T>*&, T);
+	Node<T>* nodeInsert(Node<T>*&, const T&);
 	Node<T>* findMin(Node<T>*);
 	Node<T>* removeMin(Node<T>*&);
 	void destruct(Node<T>*&);
@@ -40,7 +40,7 @@ public:
 	REQUIRES:
 		
 	*/
-	Node<T>* insert(T);
+	Node<T>* insert(const T&);
 	/*
 	PROMISES:
 		Will remove the left-most node from the tree, rebalance it, and return the value of the
@@ -70,7 +70,7 @@ AVLTree<T>::AVLTree()
 }
 
 template <class T>
-Node<T>* AVLTree<T>::insert(T newItem) {
+Node<T>* AVLTree<T>::insert(const T& newItem) {
 #ifdef DEBUG
 	cout << "Starting insert operator...\n";
 #endif
@@ -79,7 +79,7 @@ Node<T>* AVLTree<T>::insert(T newItem) {
 
 
 template <class T>
-Node<T>* AVLTree<T>::nodeInsert(Node<T>* &head, T newItem) {
+Node<T>* AVLTree<T>::nodeInsert(Node<T>* &head, const T& newItem) {
 	if (!head) {
 			head = new Node<T>(newItem);
 	}

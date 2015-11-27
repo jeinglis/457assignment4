@@ -19,7 +19,6 @@
 #include "runtime/Stack.h"
 #include "runtime/Thread.h"
 #include "kernel/Output.h"
-#include "generic/AVLTree.h"
 
 
 //added by James*********
@@ -39,8 +38,8 @@ Scheduler::Scheduler() : readyCount(0), preemption(0), resumption(0), partner(th
 
 // ********************************************************************************//
   // Reference to ready queue, changing to use AVLTree: *************  Brad
-  readyQueue[idlePriority].push_back(*idleThread);
-  //readyQueue.insert(*idleThread);
+  //readyQueue[idlePriority].push_back(*idleThread);
+  readyQueue.insert(*idleThread);
 // ********************************************************************************//
 	
   readyCount += 1;
