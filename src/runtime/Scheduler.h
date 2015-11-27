@@ -41,9 +41,9 @@ class Scheduler {
 
   //*****************************************************************//
   // Changing to use AVLTree ******************************** Brad
-  EmbeddedList<Thread> readyQueue[maxPriority];
+  //EmbeddedList<Thread> readyQueue[maxPriority];
   // Added AVL tree ******************************* Brad
- // AVLTree<Thread> readyQueue;
+  AVLTree<Thread> readyQueue;
   //*****************************************************************//
 
 

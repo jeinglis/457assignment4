@@ -86,9 +86,9 @@ inline void Scheduler::switchThread(Scheduler* target, Args&... a) {
   readyLock.acquire();
   for (mword i = 0; i < (target ? idlePriority : maxPriority); i += 1) {
     // **************************************************************************//
-    if (!readyQueue[i].empty()) {
-      nextThread = readyQueue[i].pop_front(); //Reference to readyQueue, changing to use AVL tree
-      // nextThread = readyQueue.popMin();  // Brad - Changed to .getItem to actually get thread
+    if (!readyQueue.empty()) {
+      //nextThread = readyQueue[i].pop_front(); //Reference to readyQueue, changing to use AVL tree
+      nextThread = readyQueue.popMin(); 
       // ************************************************************************//
       readyCount -= 1;
 //***********James 4b change total priority calc epoch size
@@ -165,9 +165,9 @@ void Scheduler::enqueue(Thread& t) {
 
   t.incrementVR(); // increment the virtual runtime for thread 't'
 
-  readyQueue[t.priority].push_back(t);
+  //readyQueue[t.priority].push_back(t);
   // AVL Tree implementation:
-  //readyQueue.insert(new Node(t));
+  readyQueue.insert(t);
   // ***************************************************************************** //
   bool wake = (readyCount == 0);
 
