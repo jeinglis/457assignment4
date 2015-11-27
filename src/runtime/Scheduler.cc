@@ -46,6 +46,7 @@ Scheduler::Scheduler() : readyCount(0), preemption(0), resumption(0), partner(th
 // ********************************************************************************//
   // Reference to ready queue, changing to use AVLTree: *************  Brad
   readyQueue[idlePriority].push_back(*idleThread);
+  //readyQueue.insert(*idleThread);
 // ********************************************************************************//
 	
   readyCount += 1;
@@ -93,7 +94,7 @@ inline void Scheduler::switchThread(Scheduler* target, Args&... a) {
     // **************************************************************************//
     if (!readyQueue[i].empty()) {
       nextThread = readyQueue[i].pop_front(); //Reference to readyQueue, changing to use AVL tree
-      // nextThread = readyQueue.removeMin().getItem();  // Brad - Changed to .getItem to actually get thread
+      // nextThread = readyQueue.popMin();  // Brad - Changed to .getItem to actually get thread
       // ************************************************************************//
       readyCount -= 1;
 //***********James 4b change total priority calc epoch size
