@@ -25,11 +25,8 @@ class Thread;
 
   
 //*******************James******
-  static mword epochSize;
-  static mword minimumGranularity; 
-  mword minimumVirtualTime;
-  mword timeSlice;
-  mword timeServed;
+  static mword schedMinGranularity; 
+	static mword defaultEpochSize;
 //*****************************
 
 

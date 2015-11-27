@@ -23,11 +23,15 @@
 
 
 //added by James*********
-mword defaultEpochLength;//default epoch in clock cycles
-mword schedMinGranularity;//minimumGranularity in cycles
+//mword Scheduler::defaultEpochSize;//default epoch in clock cycles
+//mword Scheduler::schedMinGranularity;//minimumGranularity in cycles
+mword epochSize;
 mword totalPriority = 0;//set in enqueue
 mword prevTSC = 0; //set in switch when thread is popped from tree
 mword currTSC = 0; //set in preempt to calculate timeServed
+mword minimumVirtualTime;
+mword timeSlice;
+mword timeServed;
 //*************************
 
 
@@ -201,16 +205,17 @@ void Scheduler::resume(Thread& t) {
 void Scheduler::preempt() {               // IRQs disabled, lock count inflated
 //*******************Added by James ...maybe kinda right? -> RIGHT! -.-  ********************
 	currTSC = CPU::readTSC();
-	mword diff = prevTSC - currTSC;
+	mword diff = currTSC - prevTSC;
 	timeServed += diff;
-	//if(timeServed >= timeSlice)
+	//if(timeServed >= timeSlice){
 				//**choosing which scheduler to run on taken from their preemt code**
 	//	Scheduler* target = Runtime::getCurrThread()->getAffinity();
 	//	if (!target) target = (partner->readyCount + 2 < readyCount) ? partner : this;
 	//	switchThread(target);
+	//}
 	//else //keep executing current thread
 	//	prevTSC = CPU::readTSC();
-	//	Runtime::setCurrThread(Runtime::getCurrThread());//not sure if we need to do this?
+
 //***********************************
 
 #if TESTING_NEVER_MIGRATE

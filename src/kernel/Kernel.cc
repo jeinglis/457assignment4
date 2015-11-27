@@ -22,12 +22,12 @@
 #include "machine/Machine.h"
 #include "devices/Keyboard.h"
 #include <stdlib.h>
+#include "runtime/Scheduler.h"
 
 #include "main/UserMain.h"
 
 AddressSpace kernelSpace(true); // AddressSpace.h
 volatile mword Clock::tick;     // Clock.h
-static int defaultEpochLength = 20; //added Assignment 4a
 static int schedMinGranularity = 4;//added Assignment 4a
 
 extern Keyboard keyboard;
@@ -82,12 +82,12 @@ void kosMain() {
                 
                 if(checked == false){
                     //convert to int and store in schedMinGranularity
-                    defaultEpochLength = atoi(tempString.c_str());
+                    Scheduler::defaultEpochLength = atoi(tempString.c_str());
                     tempString = "";
                     checked = true;
                 }
                 else
-                    schedMinGranularity = atoi(tempString.c_str());
+                    Scheduler::schedMinGranularity = atoi(tempString.c_str());
             }
             else
                 KOUT::out1(c);
@@ -95,13 +95,13 @@ void kosMain() {
 
     }
 
-    defaultEpochLength = defaultEpochLength * (Machine::cyclesPerSecond/1000);
-    schedMinGranularity = schedMinGranularity * (Machine::cyclesPerSecond/1000);
+    Scheduler::defaultEpochLength = Scheduler::defaultEpochLength * (Machine::cyclesPerSecond/1000);
+    Scheduler::schedMinGranularity = Scheduler::schedMinGranularity * (Machine::cyclesPerSecond/1000);
     
     KOUT::outl("cyclesPerSecond: ", Machine::cyclesPerSecond);
     KOUT::outl("Scheduler Parameters: ");
-    KOUT::outl("1. EpochLength: ", defaultEpochLength, " cycles");
-    KOUT::outl("2. MinGranularity: ", schedMinGranularity, " cycles\n");
+    KOUT::outl("1. EpochLength: ", Scheduler::defaultEpochLength, " cycles");
+    KOUT::outl("2. MinGranularity: ", Scheduler::schedMinGranularity, " cycles\n");
   //Added by Moath - end
 
 #if TESTING_TIMER_TEST
