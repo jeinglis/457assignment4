@@ -61,7 +61,13 @@ void kosMain() {
   }
 
 
-//Added by James assignment4a
+/***********************Added for  assignment4a
+  *modified from the motb code above 
+  *moves through the schedparam file looking for numbers (ascii values between 48 & 57)
+  *prints the values as well as sets the defaultEpoch and minGran to these values 
+  */
+
+
     string tempString = "";
     bool checked = false;
     
@@ -75,17 +81,16 @@ void kosMain() {
             char c;
             if (f.read(&c, 1) == 0) break;
             
-            if(c >= 48 && c <= 57) // number
+            if(c >= 48 && c <= 57)
             {
                 KOUT::out1(c);
-                tempString += c; // append number to tempString
+                tempString += c;
             }
-            else if ((c < 48 || c > 57) && !tempString.empty()) //if the number exists and has been read
+            else if ((c < 48 || c > 57) && !tempString.empty())
             {
                 KOUT::out1(c);
                 
-                if(checked == false){
-                    //convert to int and store in schedMinGranularity
+                if(checked == false)
                     Scheduler::defaultEpochSize = atoi(tempString.c_str());
                     tempString = "";
                     checked = true;
@@ -98,7 +103,7 @@ void kosMain() {
         }
 
     }
-
+	//*******converts defaultEpochSize and schedMinGranularity from ms to cycles per second
     Scheduler::defaultEpochSize = Scheduler::defaultEpochSize * (Machine::cyclesPerSecond/1000);
     Scheduler::schedMinGranularity = Scheduler::schedMinGranularity * (Machine::cyclesPerSecond/1000);
     
@@ -106,7 +111,7 @@ void kosMain() {
     KOUT::outl("Scheduler Parameters: ");
     KOUT::outl("1. EpochLength: ", Scheduler::defaultEpochSize, " cycles");
     KOUT::outl("2. MinGranularity: ", Scheduler::schedMinGranularity, " cycles\n");
-  //Added by Moath - end
+//*********************************************************
 
 #if TESTING_TIMER_TEST
   StdErr.print(" timer test, 3 secs...");
