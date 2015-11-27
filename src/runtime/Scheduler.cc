@@ -182,6 +182,10 @@ void Scheduler::enqueue(Thread& t) {
   if (wake) Runtime::wakeUp(this);
 }
 
+/*
+*there is no need to update vruntime on resume here since it calls enqueue 
+*which will update the vruntime within that function
+*/
 void Scheduler::resume(Thread& t) {
   GENASSERT1(&t != Runtime::getCurrThread(), Runtime::getCurrThread());
   if (t.nextScheduler) t.nextScheduler->enqueue(t);
@@ -220,12 +224,23 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
 
 }
 
+
+/*
+*We are assuming these functions are called when a thread 
+*is suspended thus we will decrement it's vRuntime
+*/
 void Scheduler::suspend(BasicLock& lk) {
+	Thread* currThread = Runtime::getCurrThread();
+	mword VRuntime = currThread->getVR()- minimumVirtualTime;
+	currThread->setVR(VRuntime);
   Runtime::FakeLock fl;
   switchThread(nullptr, lk);
 }
 
 void Scheduler::suspend(BasicLock& lk1, BasicLock& lk2) {//when something goes ot sleep
+	Thread* currThread = Runtime::getCurrThread();
+	mword VRuntime = currThread->getVR()- minimumVirtualTime;
+	currThread->setVR(VRuntime);
   Runtime::FakeLock fl;
   switchThread(nullptr, lk1, lk2);
 }
