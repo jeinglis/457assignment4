@@ -23,11 +23,6 @@
 class Thread;
 
 
-  
-//*******************James******
-  static mword schedMinGranularity; 
-	static mword defaultEpochSize;
-//*****************************
 
 
 
@@ -35,8 +30,8 @@ class Scheduler {
   friend void Runtime::idleLoop(Scheduler*);
   bufptr_t idleStack[minimumStack];
 
+  
 
- 
 
   // very simple N-class prio scheduling
   BasicLock readyLock;
@@ -67,7 +62,12 @@ class Scheduler {
   const Scheduler& operator=(const Scheduler&) = delete; // no assignment
 
 public:
+//*******************James******
+  static mword schedMinGranularity; 
+	static mword defaultEpochSize;
+//*****************************
 
+ 
   
   Scheduler();
   void setPartner(Scheduler& s) { partner = &s; }

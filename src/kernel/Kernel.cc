@@ -26,9 +26,13 @@
 
 #include "main/UserMain.h"
 
+
+  //extern static mword schedMinGranularity; 
+	//extern static mword defaultEpochSize;
+
+
 AddressSpace kernelSpace(true); // AddressSpace.h
 volatile mword Clock::tick;     // Clock.h
-static int schedMinGranularity = 4;//added Assignment 4a
 
 extern Keyboard keyboard;
 
@@ -82,7 +86,7 @@ void kosMain() {
                 
                 if(checked == false){
                     //convert to int and store in schedMinGranularity
-                    Scheduler::defaultEpochLength = atoi(tempString.c_str());
+                    Scheduler::defaultEpochSize = atoi(tempString.c_str());
                     tempString = "";
                     checked = true;
                 }
@@ -95,12 +99,12 @@ void kosMain() {
 
     }
 
-    Scheduler::defaultEpochLength = Scheduler::defaultEpochLength * (Machine::cyclesPerSecond/1000);
+    Scheduler::defaultEpochSize = Scheduler::defaultEpochSize * (Machine::cyclesPerSecond/1000);
     Scheduler::schedMinGranularity = Scheduler::schedMinGranularity * (Machine::cyclesPerSecond/1000);
     
     KOUT::outl("cyclesPerSecond: ", Machine::cyclesPerSecond);
     KOUT::outl("Scheduler Parameters: ");
-    KOUT::outl("1. EpochLength: ", Scheduler::defaultEpochLength, " cycles");
+    KOUT::outl("1. EpochLength: ", Scheduler::defaultEpochSize, " cycles");
     KOUT::outl("2. MinGranularity: ", Scheduler::schedMinGranularity, " cycles\n");
   //Added by Moath - end
 
