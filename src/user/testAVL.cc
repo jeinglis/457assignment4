@@ -1,5 +1,4 @@
-#include "AVLTree.h"
-#include "Node.h"
+#include "generic/AVLTree.h"
 
 void testAVL() {
 
