@@ -28,6 +28,7 @@ private:
 	Node<T>* helper(Node<T>*);
 public:
 	//////// Operations ///////////
+	bool empty();
 	/*
 	PROMISES:
 		Creates an AVL tree with a null root
@@ -101,6 +102,13 @@ Node<T>* AVLTree<T>::findMin(Node<T>* node)
 	if (!(node->left))
 		return node;
 	return node->left ? findMin(node->left) : node;
+}
+
+template <class T>
+bool AVLTree<T>::empty()	{
+	if (!root)
+		return true;
+	return false;
 }
 
 template <class T>
